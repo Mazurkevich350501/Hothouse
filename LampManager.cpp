@@ -4,22 +4,22 @@ int strobeLength;
 int delayLength;
 
 void upStrobeLength(){
-    if(strobeLength < MAX_VALUE) strobeLength += STAP;
+    if(strobeLength < MAX_VALUE) strobeLength += STEP;
 }
 
 void downStrobeLength(){
-    if(strobeLength > MIN_VALUE) strobeLength -= STAP;
+    if(strobeLength > MIN_VALUE) strobeLength -= STEP;
 }
 void upDelayLength(){
-    if(delayLength < MAX_VALUE) delayLength += STAP;
+    if(delayLength < MAX_VALUE) delayLength += STEP;
 }
 
 void downDelayLength(){
-    if(delayLength > MIN_VALUE) delayLength -= STAP;
+    if(delayLength > MIN_VALUE) delayLength -= STEP;
 }
 
 LampManager::LampManager(){
-    int value = ((int)(MAX_VALUE/(2*STAP)))*STAP;
+    int value = ((int)(MAX_VALUE/(2*STEP)))*STEP;
     strobeLength = value;
     delayLength = value;
     attachInterrupt(0, downDelayLength, RISING);
