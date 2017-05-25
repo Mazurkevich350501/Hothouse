@@ -4,10 +4,7 @@
 class LightSensor {
 	public:
 		int GetLightLevel();
-		void Init();
-    LightSensor(){
-      lightMeter = new BH1750(0x23);
-    }
+		LightSensor();
     ~LightSensor(){
       delete lightMeter;
     }
