@@ -8,7 +8,7 @@ UTFT myGLCD(CTE32HR,38,39,40,41);
 
 void InitScreen();
 
-ScreenManager::ScreenManager(){
+void ScreenManager::Init(){
     randomSeed(analogRead(0));
     // Setup the LCD
     myGLCD.InitLCD();

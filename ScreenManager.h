@@ -3,6 +3,6 @@
 
 class ScreenManager{
     public:
-        ScreenManager();
+        void Init();
         void Show(SensorValues sensorValues);
 };
