@@ -13,24 +13,27 @@ LampManager lampManager;
 SensorValues sensorValues;
 CO2History co2History;
 
+int secondCount = 0;
+
 void setup()
 {
   Serial.begin(9600);
   screenManager.Init();
   lightSensor.Init();
+  lampManager.Init();
 }
 
 void loop()
 {
-  tempAndHumSensor.UpdateValue();
+  if(secondCount >= 60) secondCount = 0;
+  if(secondCount % 2 == 0) tempAndHumSensor.UpdateValue();
+  if(secondCount % 60 == 0) co2History.Update();
+  sensorValues.CO2 = co2History.GetLastValue();
   sensorValues.Temperature = tempAndHumSensor.GetLastTemperature();
   sensorValues.Humidity = tempAndHumSensor.GetLastHumidity();
   sensorValues.LightLevel = lightSensor.GetLightLevel();
   sensorValues.StrobeLength = lampManager.GetStrobeLength();
   sensorValues.DelayLength = lampManager.GetDelayLength();
   screenManager.Show(sensorValues);
-  Serial.print(sensorValues.Temperature);
-  Serial.print(" - ");
-  Serial.println(sensorValues.Humidity);
-  delay(1000);
+  delay(500);
 }
