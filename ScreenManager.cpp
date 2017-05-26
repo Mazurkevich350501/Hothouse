@@ -1,4 +1,7 @@
 #include "ScreenManager.h"
+#include "Arduino.h"
+#include "HardwareSerial.h"
+
 
 // Declare which fonts we will be using
 extern uint8_t SmallFont[];
@@ -9,96 +12,64 @@ UTFT myGLCD(CTE32HR,38,39,40,41);
 void InitScreen();
 
 void ScreenManager::Init(){
-    randomSeed(analogRead(0));
-    // Setup the LCD
+    randomSeed(analogRead(1));
     myGLCD.InitLCD();
     InitScreen();
 } 
 
-void DrawGraph(){
+int GetYPosition(int value, int height){
+    int span = (MAX_GRAPH_VALUE - MIN_GRAPH_VALUE);
+    double result = value;
+    result /= span;
+    return result * height;
+}
+
+void SetPixel(int x, int y){
+    int startX = 72,  startY = 250;
+    myGLCD.setColor(0,255,255);
+    myGLCD.drawPixel(startX + x, startY - y);
+}
+
+void RemovePixel(int x, int y){
+    int startX = 72,  startY = 250;
+    byte color = 0;
+    if(!x % 30) color = 205;
+    else if (!x % 10) color = 60;
+    else if (!y % 50) color = 205;
+    else if (!y % 25) color = 60;
+    myGLCD.setColor(0, 0, color);
+    myGLCD.drawPixel(startX + x, startY - y);
+}
+
+void ScreenManager::DrawGraph(CO2History &history){
     // Рисуем график
-    int x=72;
-    int buf_pH_ai_sec[407], buf_pH_sp_sec[407];
-    int buf_pH_ai_min[407], buf_pH_sp_min[407];
-    int buf_pH_ai_hour[407], buf_pH_sp_hour[407];
-    int xg, tg;
-    int y, y2, yg;
-    int r, lvl_ai=100, lvl_sp=100;
-    float pH_ai=14.00, pH_sp=6.40, TDS_ai=2.00, TDS_sp=2.00, pH_g;
-    boolean b1;
-    for (int i=1; i<(478*15); i++) 
-    {
-        if (x==480)
-        {
-            x=72;
+    int xWidth = 360, yHeight = 200;
+    xWidth = xWidth > history.GetHistoryLength()
+        ? history.GetHistoryLength()
+        : xWidth;
+    for(int i = 0; i < xWidth; i++){
+        int yPos = GetYPosition(history.Read(i), yHeight);
+        SetPixel(i, yPos);
+        if(i < xWidth) {
+            yPos = GetYPosition(history.Read(i + 1), yHeight);
+            RemovePixel(i + 1, yPos);    
         }
-        for (int x2=0; x2<=407; x2++)
-        {
-            buf_pH_ai_sec[(407-x2)]=buf_pH_ai_sec[(406-x2)];
-            buf_pH_sp_sec[(407-x2)]=buf_pH_sp_sec[(406-x2)];
-        }
-        buf_pH_ai_sec[1]=159+(sin(((i*0.7)*3.14)/180)*(90-(i / 100)));
-        buf_pH_sp_sec[1]=250-int((pH_sp-4.0)*50);
-        for (int x3=0; x3<=405; x3++)
-        {
-            if ((buf_pH_ai_sec[x3]>0)&&(buf_pH_sp_sec[x3]>0))
-            {
-                y=constrain(buf_pH_ai_sec[x3],50,250);
-                y2=constrain(buf_pH_sp_sec[x3],50,250);
-                myGLCD.setColor(0,255,255);
-                if ((y>=50)&&(y<+250)) myGLCD.drawPixel(x3+72,y);
-                myGLCD.setColor(255,0,0);
-                if ((y2>=50)&&(y2<+250)) myGLCD.drawPixel(x3+72,y2);
-                if (buf_pH_ai_sec[x3] != buf_pH_ai_sec[x3+1])
-                {
-                    if ((x3==0)||(x3==30)||(x3==60)||(x3==90)||(x3==120)||(x3==150)||(x3==180)||(x3==210)||(x3==240)||(x3==270)||(x3==300)||(x3==330)||(x3==360)||(x3==390))
-                    {
-                        myGLCD.setColor(0,0,205);
-                    }
-                    else if ((buf_pH_ai_sec[x3+1]==50)||(buf_pH_ai_sec[x3+1]==150)||(buf_pH_ai_sec[x3+1]==250)||(buf_pH_ai_sec[x3+1]==100)||(buf_pH_ai_sec[x3+1]==200))
-                    {
-                        myGLCD.setColor(0,0,205);
-                    }
-                    else if ((x3==10)||(x3==20)||(x3==40)||(x3==50)||(x3==70)||(x3==80)||(x3==100)||(x3==110)||(x3==130)||(x3==140)||(x3==160)||(x3==170)||(x3==190))
-                    {
-                        myGLCD.setColor(0,0,60);
-                    }
-                    else if ((x3==200)||(x3==220)||(x3==230)||(x3==250)||(x3==70)||(x3==260)||(x3==280)||(x3==290)||(x3==310)||(x3==320)||(x3==340)||(x3==350)||(x3==370)||(x3==380))
-                    {
-                        myGLCD.setColor(0,0,60);
-                    }
-                    else if ((buf_pH_ai_sec[x3+1]==75)||(buf_pH_ai_sec[x3+1]==125)||(buf_pH_ai_sec[x3+1]==175)||(buf_pH_ai_sec[x3+1]==225))
-                    {
-                        myGLCD.setColor(0, 0, 60);
-                    }
-                    else myGLCD.setColor(0,0,0);
-                    if ((buf_pH_ai_sec[x3+1]>=50)&&(buf_pH_ai_sec[x3+1]<+250)) myGLCD.drawPixel(x3+72,buf_pH_ai_sec[x3+1]);
-                }
-            }
-        }
-    x++;
-  }
+    }
 }
 
 void InitScreen()
 {
-    int x, xg, tg;
-    int y, y2, yg;
-    int r, lvl_ai=100, lvl_sp=100;
-    float pH_ai=14.00, pH_sp=6.40, TDS_ai=2.00, TDS_sp=2.00, pH_g;
-    boolean b1;
-    unsigned long time;
-    time = millis();
+    int xg, tg;
+    int yg;
+    int pH_g = MAX_GRAPH_VALUE, step = (MAX_GRAPH_VALUE - MIN_GRAPH_VALUE)/8;
     // Clear the screen and draw the frame
     myGLCD.clrScr();
-
     myGLCD.setFont(BigFont);
     // Сетка графика
     myGLCD.setColor(0,0,0);
     myGLCD.fillRect(32,50,479,250);
     // Горизонтальные линии
     tg=50;
-    pH_g=8.0;
     myGLCD.setFont(BigFont);
     for (yg=50; yg<=250; yg=yg+25)
     {
@@ -116,7 +87,7 @@ void InitScreen()
             myGLCD.drawLine(72, yg, 478, yg);
             myGLCD.print(String(pH_g), 2, yg-4);
         }
-        pH_g=pH_g-0.5;
+        pH_g=pH_g-step;
     }
     // Вертикальные линии
     myGLCD.setFont(SmallFont);
@@ -137,6 +108,7 @@ void InitScreen()
             myGLCD.drawLine(xg,50, xg, 250);
         } 
     }
+
     myGLCD.setFont(BigFont);
     // Рисуем верхние большие квадраты
     myGLCD.setColor(25, 25, 255);
@@ -161,35 +133,18 @@ void InitScreen()
 void ScreenManager::Show(SensorValues sensorValues){
     myGLCD.setFont(BigFont);
         
-    // Рисуем квадраты под показания
-    myGLCD.setColor(0, 128, 0);
-    myGLCD.fillRect(5, 20, 120, 42);
     myGLCD.setColor(240, 255, 240);
     myGLCD.setBackColor(0, 128, 0);
-    myGLCD.print(String(sensorValues.Temperature) + "c", 8, 24);
+    myGLCD.print(String(sensorValues.Temperature) + "c ", 8, 24);           //temp
+    myGLCD.print(String(sensorValues.LightLevel)+ "   ", 248, 24);          //Ligth
 
-    myGLCD.setColor(128, 0, 0);
-    myGLCD.fillRect(125, 20, 240, 42);
-    myGLCD.setColor(240, 255, 240);
     myGLCD.setBackColor(128, 0, 0);
-    myGLCD.print(String(sensorValues.Humidity) + "%", 128, 24);
+    myGLCD.print(String(sensorValues.Humidity) + "% ", 128, 24);            //Hum
+    myGLCD.print(String(sensorValues.CO2) + "   ", 368, 24);                //co2
     
-    // Рисуем квадраты под показания
-    myGLCD.setColor(0, 128, 0);
-    myGLCD.fillRect(245, 20, 350, 42);
-    myGLCD.setColor(240, 255, 240);
-    myGLCD.setBackColor(0, 128, 0);
-    myGLCD.print(String(sensorValues.LightLevel), 248, 24);
-
-    myGLCD.setColor(128, 0, 0);
-    myGLCD.fillRect(355, 20, 470, 42);
-    myGLCD.setColor(240, 255, 240);
-    myGLCD.setBackColor(128, 0, 0);
-    myGLCD.print(String(sensorValues.CO2), 368, 24);
-
     myGLCD.setBackColor(25, 25, 112);
     myGLCD.setColor(255, 255, 255);
-    myGLCD.print(String(sensorValues.StrobeLength) + "ms", 120, 286);
-    myGLCD.print(String(sensorValues.DelayLength) + "ms", 347, 286);
+    myGLCD.print(String(sensorValues.StrobeLength) + "ms   ", 120, 286);    //strobe
+    myGLCD.print(String(sensorValues.DelayLength) + "ms    ", 347, 286);    //delay
 }
 

@@ -2,7 +2,6 @@
 #include "TemperatureAndHumiditySensor.h"
 #include "LightSensor.h"
 #include "LampManager.h"
-#include "CO2History.h"
 
 // Declare which fonts we will be using
 
@@ -35,5 +34,6 @@ void loop()
   sensorValues.StrobeLength = lampManager.GetStrobeLength();
   sensorValues.DelayLength = lampManager.GetDelayLength();
   screenManager.Show(sensorValues);
+  screenManager.DrawGraph(co2History);
   delay(500);
 }

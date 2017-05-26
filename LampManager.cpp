@@ -1,8 +1,4 @@
 #include "LampManager.h"
-#include "Arduino.h"
-#include "HardwareSerial.h"
-
-
 
 int strobeLength;
 int delayLength;
