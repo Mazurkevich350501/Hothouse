@@ -1,6 +1,4 @@
 #include "ScreenManager.h"
-#include "Arduino.h"
-#include "HardwareSerial.h"
 
 
 // Declare which fonts we will be using
@@ -143,7 +141,7 @@ void ScreenManager::Show(SensorValues sensorValues){
     
     myGLCD.setBackColor(25, 25, 112);
     myGLCD.setColor(255, 255, 255);
-    myGLCD.print(String(sensorValues.StrobeLength) + "ms   ", 120, 286);    //strobe
+    myGLCD.print(String(sensorValues.StrobeLength) + "ms ", 120, 286);    //strobe
     myGLCD.print(String(sensorValues.DelayLength) + "ms    ", 347, 286);    //delay
 }
 
