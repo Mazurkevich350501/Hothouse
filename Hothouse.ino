@@ -26,7 +26,10 @@ void loop()
 {
   if(secondCount >= 60) secondCount = 0;
   if(secondCount % 2 == 0) tempAndHumSensor.UpdateValue();
-  if(secondCount % 60 == 0) co2History.Update();
+  if(secondCount % 60 == 0) {
+    co2History.Update();
+    screenManager.DrawGraph(co2History);
+  }
   sensorValues.CO2 = co2History.GetLastValue();
   sensorValues.Temperature = tempAndHumSensor.GetLastTemperature();
   sensorValues.Humidity = tempAndHumSensor.GetLastHumidity();
@@ -34,6 +37,6 @@ void loop()
   sensorValues.StrobeLength = lampManager.GetStrobeLength();
   sensorValues.DelayLength = lampManager.GetDelayLength();
   screenManager.Show(sensorValues);
-  screenManager.DrawGraph(co2History);
   delay(500);
+  secondCount += 1;
 }

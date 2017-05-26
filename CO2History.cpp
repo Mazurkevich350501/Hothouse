@@ -20,8 +20,8 @@ CO2History::CO2History(){
 
 int CO2History::Read(int index){
     if(index > HISTORY_LENGTH || index < 0) return 0;
-    return (index + data.headIndex) > HISTORY_LENGTH
-        ? data.values[HISTORY_LENGTH - (index + data.headIndex)]
+    return (index + data.headIndex) >= HISTORY_LENGTH
+        ? data.values[(index + data.headIndex) - HISTORY_LENGTH]
         : data.values[index + data.headIndex];
 }
 

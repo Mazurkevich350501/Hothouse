@@ -47,13 +47,12 @@ void ScreenManager::DrawGraph(CO2History &history){
     xWidth = xWidth > history.GetHistoryLength()
         ? history.GetHistoryLength()
         : xWidth;
+        
     for(int i = 0; i < xWidth; i++){
-        int yPos = GetYPosition(history.Read(i), yHeight);
+        int yPos = GetYPosition(history.Read(i + 1), yHeight);
+        RemovePixel(i, yPos); 
+        yPos = GetYPosition(history.Read(i), yHeight);
         SetPixel(i, yPos);
-        if(i < xWidth) {
-            yPos = GetYPosition(history.Read(i + 1), yHeight);
-            RemovePixel(i + 1, yPos);    
-        }
     }
 }
 
