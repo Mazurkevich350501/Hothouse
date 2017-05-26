@@ -8,26 +8,26 @@ extern uint8_t BigFont[];
 UTFT myGLCD(CTE32HR,38,39,40,41);
 
 void InitScreen();
-
+//инициализация экрана
 void ScreenManager::Init(){
     randomSeed(analogRead(1));
     myGLCD.InitLCD();
     InitScreen();
 } 
-
+//расчитывает позицию по вертикали пикселя по его значению
 int GetYPosition(int value, int height){
     int span = (MAX_GRAPH_VALUE - MIN_GRAPH_VALUE);
     double result = value;
     result /= span;
     return result * height;
 }
-
-void SetPixel(int x, int y){
-    int startX = 72,  startY = 250;
+//Рисует точку на графике
+void DrawPixel(int x, int y){
+    int startX = 72,  startY = 250; // начало координат графика
     myGLCD.setColor(0,255,255);
     myGLCD.drawPixel(startX + x, startY - y);
 }
-
+//закрашивает пиксель в цвет сетки на графике (удаляет точку)
 void RemovePixel(int x, int y){
     int startX = 72,  startY = 250;
     byte color = 0;
@@ -38,24 +38,27 @@ void RemovePixel(int x, int y){
     myGLCD.setColor(0, 0, color);
     myGLCD.drawPixel(startX + x, startY - y);
 }
-
+// Рисуем график
 void ScreenManager::DrawGraph(CO2History &history){
-    // Рисуем график
+    //размеры графика по ширине и высоте
     int xWidth = 360, yHeight = 200;
+    //если в истории нету записей на всю ширину графика, то тогда ширина выбиается равной длине истории
     xWidth = xWidth > history.GetHistoryLength()
         ? history.GetHistoryLength()
         : xWidth;
-        
+    //Рисуем точку графика
     for(int i = 0; i < xWidth; i++){
+        //удаляем предыдущее значение с координатой x = i
         int yPos = GetYPosition(history.Read(i + 1), yHeight);
         RemovePixel(i, yPos); 
+        //добавляем новую точку
         yPos = GetYPosition(history.Read(i), yHeight);
-        SetPixel(i, yPos);
+        DrawPixel(i, yPos);
     }
 }
 
-void InitScreen()
-{
+//Рисует задний фон экрана
+void InitScreen(){
     int xg, tg;
     int yg;
     int pH_g = MAX_GRAPH_VALUE, step = (MAX_GRAPH_VALUE - MIN_GRAPH_VALUE)/8;
@@ -126,7 +129,7 @@ void InitScreen()
     myGLCD.print("Strobe:", 5, 286);
     myGLCD.print("Delay:", 247, 286);
 }
-
+//Выводит значения датчиков и длительности свечения
 void ScreenManager::Show(SensorValues sensorValues){
     myGLCD.setFont(BigFont);
         
@@ -141,7 +144,7 @@ void ScreenManager::Show(SensorValues sensorValues){
     
     myGLCD.setBackColor(25, 25, 112);
     myGLCD.setColor(255, 255, 255);
-    myGLCD.print(String(sensorValues.StrobeLength) + "ms ", 120, 286);    //strobe
+    myGLCD.print(String(sensorValues.StrobeLength) + "ms ", 120, 286);      //strobe
     myGLCD.print(String(sensorValues.DelayLength) + "ms    ", 347, 286);    //delay
 }
 

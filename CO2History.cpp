@@ -1,30 +1,37 @@
 #include "CO2History.h"
 
 CO2History::CO2History(){
+    //инициализация сд карты
     if (!sd.begin(SD_CHIP_SELECT, SPI_FULL_SPEED)) {
         sd.initErrorHalt();
         return;
     }
-
+    // чтение данных из файла
     if(sd.exists(FILE_NAME)){  
         myFile = sd.open(FILE_NAME);
         myFile.read(&data, sizeof(Data)); 
         myFile.close();
     }
     else{
+        //если файла нет, то инициализируем нулями
         data.headIndex = 0;
         for(int i = 0; i < HISTORY_LENGTH; i++)
             data.values[i] = 0;
     }
 }
-
+//извлекает значение из кольца
+/*
+    индекс равный рулю = голова кольца
+    остальные элементы = голова кольца + индекс
+    если выход за пределы массива = голова кольца + индекс - длина массива
+*/
 int CO2History::Read(int index){
     if(index > HISTORY_LENGTH || index < 0) return 0;
     return (index + data.headIndex) >= HISTORY_LENGTH
         ? data.values[(index + data.headIndex) - HISTORY_LENGTH]
         : data.values[index + data.headIndex];
 }
-
+//чтение и сохранение данных о co2
 void CO2History::Update(){
     data.headIndex = data.headIndex > 0
         ? data.headIndex - 1
@@ -50,7 +57,7 @@ void CO2History::save(){
 int CO2History::getPpmValue(){
     return convertToPpm(analogRead(SENSOR_PIN));
 }
-
+//божественная формула, которая, как говорят люди с интеренета, достаточно точно переводит вольты в ppm
 int CO2History::convertToPpm(float Vout){
     int RL = 10;
     float R0 = 76.63;

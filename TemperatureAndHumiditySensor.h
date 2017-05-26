@@ -1,7 +1,7 @@
 #include <SimpleDHT.h>
 
 #define DHTPIN 7
-
+//практически стандартные настройки датчика
 class TemperatureAndHumiditySensor{
 	public:
 		float GetLastTemperature();

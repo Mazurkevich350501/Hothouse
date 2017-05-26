@@ -1,3 +1,4 @@
+//структура, которая хранит данные с датчиков для отображения на экране 
 struct SensorValues{
     float Temperature;
     float Humidity;

@@ -12,7 +12,7 @@ LampManager lampManager;
 SensorValues sensorValues;
 CO2History co2History;
 
-int secondCount = 0;
+int secondCount = 0; //количество секунд
 
 void setup()
 {
@@ -24,11 +24,14 @@ void setup()
 
 void loop()
 {
-  if(secondCount >= 60) secondCount = 0;
-  if(secondCount % 2 == 0) tempAndHumSensor.UpdateValue();
+  if(secondCount >= 60) secondCount = 0; //раз в минуту счетчик секунд сбрасывается
+  if(secondCount % 2 == 0) {
+    tempAndHumSensor.UpdateValue();
+    secondCount += 1;                   //каждую секунду счетчик увеличивается на 1
+  }
   if(secondCount % 60 == 0) {
-    co2History.Update();
-    screenManager.DrawGraph(co2History);
+    co2History.Update();                  //раз в минуту читаются данные с датчика CO2 и сохрвняются
+    screenManager.DrawGraph(co2History);  //рисует график
   }
   sensorValues.CO2 = co2History.GetLastValue();
   sensorValues.Temperature = tempAndHumSensor.GetLastTemperature();
@@ -36,7 +39,6 @@ void loop()
   sensorValues.LightLevel = lightSensor.GetLightLevel();
   sensorValues.StrobeLength = lampManager.GetStrobeLength();
   sensorValues.DelayLength = lampManager.GetDelayLength();
-  screenManager.Show(sensorValues);
+  screenManager.Show(sensorValues);       //отображение данных датчиков на экране
   delay(500);
-  secondCount += 1;
 }
