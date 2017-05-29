@@ -49,7 +49,7 @@ int CO2History::Read(int index){
 void CO2History::Update(){
     data.headIndex = data.headIndex > 0
         ? data.headIndex - 1
-        : HISTORY_LENGTH - 1;
+        : HISTORY_LENGTH;
     data.values[data.headIndex] = getPpmValue();
     if(withSd) save();
 }
