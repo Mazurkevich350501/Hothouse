@@ -40,7 +40,7 @@ CO2History::CO2History(){
     если выход за пределы массива = голова кольца + индекс - длина массива
 */
 int CO2History::Read(int index){
-    if(index > HISTORY_LENGTH || index < 0) return 0;
+    if(index > HISTORY_LENGTH) return 0;
     return (index + data.headIndex) >= HISTORY_LENGTH
         ? data.values[(index + data.headIndex) - HISTORY_LENGTH]
         : data.values[index + data.headIndex];
@@ -49,7 +49,7 @@ int CO2History::Read(int index){
 void CO2History::Update(){
     data.headIndex = data.headIndex > 0
         ? data.headIndex - 1
-        : HISTORY_LENGTH;
+        : HISTORY_LENGTH - 1;
     data.values[data.headIndex] = getPpmValue();
     if(withSd) save();
 }
