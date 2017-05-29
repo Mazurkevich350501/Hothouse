@@ -14,6 +14,7 @@ class CO2History {
         int GetHistoryLength();         //возвращает длину истории
         int GetLastValue();             //возвращает последнее измеренное значение (тоже самое что Read(0) )
     private:
+        bool withSd = false;
         void save();                    //запись истории в файл
         int getPpmValue();              //измеряет и возвращает показание в ppm
         int convertToPpm(float Vout);   //конвертирует показания из вольт в ppm

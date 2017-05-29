@@ -1,6 +1,9 @@
 #include "CO2History.h"
 
+//с картой 
+/*
 CO2History::CO2History(){
+    withSd = true;
     //инициализация сд карты
     if (!sd.begin(SD_CHIP_SELECT, SPI_FULL_SPEED)) {
         sd.initErrorHalt();
@@ -19,6 +22,17 @@ CO2History::CO2History(){
             data.values[i] = 0;
     }
 }
+*/
+
+CO2History::CO2History(){
+    //если файла нет, то инициализируем нулями
+    data.headIndex = 0;
+    for(int i = 0; i < HISTORY_LENGTH; i++)
+        data.values[i] = 0;
+}
+
+
+
 //извлекает значение из кольца
 /*
     индекс равный рулю = голова кольца
@@ -37,7 +51,7 @@ void CO2History::Update(){
         ? data.headIndex - 1
         : HISTORY_LENGTH;
     data.values[data.headIndex] = getPpmValue();
-    save();
+    if(withSd) save();
 }
 
 int CO2History::GetHistoryLength(){
