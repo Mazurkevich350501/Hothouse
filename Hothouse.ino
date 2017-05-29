@@ -20,12 +20,13 @@ void setup()
   screenManager.Init();
   lightSensor.Init();
   lampManager.Init();
+  co2History.Update();
 }
 
 void loop()
 {
   if(secondCount >= 60) secondCount = 0; //раз в минуту счетчик секунд сбрасывается
-  if(secondCount % 2 == 0) {
+  if(secondCount % 4 == 0) {
     tempAndHumSensor.UpdateValue();
     secondCount += 1;                   //каждую секунду счетчик увеличивается на 1
   }
