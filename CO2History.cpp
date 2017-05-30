@@ -50,7 +50,7 @@ void CO2History::Update(){
     data.headIndex = data.headIndex > 0
         ? data.headIndex - 1
         : HISTORY_LENGTH;
-    data.values[data.headIndex] = getPpmValue();
+    data.values[data.headIndex] = sensor.getPPM();
     if(withSd) save();
 }
 
@@ -66,17 +66,4 @@ void CO2History::save(){
     myFile = sd.open(FILE_NAME, O_WRITE | O_CREAT | O_TRUNC);
     myFile.write(&data, sizeof(Data));
     myFile.close();
-}
-
-int CO2History::getPpmValue(){
-    return convertToPpm(analogRead(SENSOR_PIN));
-}
-//божественная формула, которая, как говорят люди с интеренета, достаточно точно переводит вольты в ppm
-int CO2History::convertToPpm(float Vout){
-    int RL = 10;
-    float R0 = 76.63;
-    float Rs=( ( 5.0 * RL ) - ( RL * Vout ) ) / Vout;
-    float ratio=Rs/R0;
-    ratio=ratio*0.3611;
-    return (146.15*(2.868-ratio)+10);
 }

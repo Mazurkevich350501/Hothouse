@@ -1,4 +1,5 @@
 #include <SdFat.h>
+#include "MQ135.h"
 
 #define HISTORY_LENGTH 470  //количество хранимых значений
 #define SD_CHIP_SELECT  53  //порт для карты пямяти
@@ -14,10 +15,9 @@ class CO2History {
         int GetHistoryLength();         //возвращает длину истории
         int GetLastValue();             //возвращает последнее измеренное значение (тоже самое что Read(0) )
     private:
+        MQ135 sensor;
         bool withSd = false;
         void save();                    //запись истории в файл
-        int getPpmValue();              //измеряет и возвращает показание в ppm
-        int convertToPpm(float Vout);   //конвертирует показания из вольт в ppm
         SdFat sd;                       //класс, который пишет и читает с флешки
         File myFile;                    //файл который используется для хранения данных
         struct Data{                    //структура, которая записывается в файл
