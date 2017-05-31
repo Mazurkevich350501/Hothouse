@@ -26,12 +26,12 @@ void setup()
 
 void loop()
 {
-  if(secondCount >= 60) secondCount = 0; //раз в минуту счетчик секунд сбрасывается
+  if(secondCount >= 120) secondCount = 0; //раз в минуту счетчик секунд сбрасывается
   if(secondCount % 4 == 0) {
     tempAndHumSensor.UpdateValue();
-    secondCount += 2;                   //каждую секунду счетчик увеличивается на 1
+                   //каждую секунду счетчик увеличивается на 1
   }
-  if(secondCount % 60 == 0) {
+  if(secondCount % 120 == 0) {
     co2History.Update();                  //раз в минуту читаются данные с датчика CO2 и сохрвняются
     screenManager.DrawGraph(co2History);  //рисует график
   }
@@ -43,5 +43,6 @@ void loop()
   sensorValues.DelayLength = lampManager.GetDelayLength();
   screenManager.Show(sensorValues);       //отображение данных датчиков на экране
   delay(500);
+  secondCount += 1;
   Serial.println(secondCount);
 }
