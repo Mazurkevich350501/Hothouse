@@ -14,6 +14,7 @@ class CO2History {
         void Update();                  //считывает показание и сохраняет его на карту памяти
         int GetHistoryLength();         //возвращает длину истории
         int GetLastValue();             //возвращает последнее измеренное значение (тоже самое что Read(0) )
+        int GetCurrentValue();
     private:
         bool withSd = false;
         void save();                    //запись истории в файл

@@ -33,7 +33,9 @@ CO2History::CO2History(){
         data.values[i] = 0;
 }
 
-
+int CO2History::GetCurrentValue(){
+    return sensor.getPPM();
+}
 
 //извлекает значение из кольца
 /*

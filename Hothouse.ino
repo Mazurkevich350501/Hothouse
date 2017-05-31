@@ -35,7 +35,7 @@ void loop()
     co2History.Update();                  //раз в минуту читаются данные с датчика CO2 и сохрвняются
     screenManager.DrawGraph(co2History);  //рисует график
   }
-  sensorValues.CO2 = co2History.GetLastValue();
+  sensorValues.CO2 = co2History.GetCurrentValue();
   sensorValues.Temperature = tempAndHumSensor.GetLastTemperature();
   sensorValues.Humidity = tempAndHumSensor.GetLastHumidity();
   sensorValues.LightLevel = lightSensor.GetLightLevel();
@@ -44,5 +44,4 @@ void loop()
   screenManager.Show(sensorValues);       //отображение данных датчиков на экране
   delay(500);
   secondCount += 1;
-  Serial.println(secondCount);
 }
