@@ -1,5 +1,7 @@
 #include "CO2History.h"
 
+MQ135 sensor(0);
+
 //с картой 
 /*
 CO2History::CO2History(){

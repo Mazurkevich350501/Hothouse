@@ -1,5 +1,7 @@
 #include "TemperatureAndHumiditySensor.h"
 
+DHT dhtSensor(DHT22);
+
 float TemperatureAndHumiditySensor::GetLastHumidity(){
 	return humidity;
 }
@@ -9,9 +11,7 @@ float TemperatureAndHumiditySensor::GetLastTemperature(){
 }
 
 void TemperatureAndHumiditySensor::UpdateValue(){
-	byte temp, hum;
-	if(dht11.read(DHTPIN, &temp, &hum, NULL)){
-		temperature = temp;
-		humidity = hum;
-	}
+  temperature = dhtSensor.readTemperature(DHTPIN);
+  humidity = dhtSensor.readHumidity(DHTPIN);
 }
+

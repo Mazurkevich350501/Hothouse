@@ -21,6 +21,7 @@ void setup()
   lightSensor.Init();
   lampManager.Init();
   co2History.Update();
+  pinMode(DHTPIN, INPUT);
 }
 
 void loop()
