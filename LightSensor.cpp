@@ -5,5 +5,5 @@ int LightSensor::GetLightLevel(){
 }
 
 void LightSensor::Init(){
-    lightMeter.begin(BH1750_CONTINUOUS_HIGH_RES_MODE);
+    lightMeter.begin();
 }

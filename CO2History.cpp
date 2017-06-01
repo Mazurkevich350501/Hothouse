@@ -3,7 +3,7 @@
 MQ135 sensor(0);
 
 //с картой 
-/*
+
 CO2History::CO2History(){
     withSd = true;
     //инициализация сд карты
@@ -24,14 +24,14 @@ CO2History::CO2History(){
             data.values[i] = 0;
     }
 }
-*/
 
+/*
 CO2History::CO2History(){
     //если файла нет, то инициализируем нулями
     data.headIndex = 0;
     for(int i = 0; i < HISTORY_LENGTH; i++)
         data.values[i] = 0;
-}
+}*/
 
 int CO2History::GetCurrentValue(){
     return sensor.getPPM();
