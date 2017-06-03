@@ -1,3 +1,7 @@
+#ifndef SensorVal
+#define SensorVal
+
+
 //структура, которая хранит данные с датчиков для отображения на экране 
 struct SensorValues{
     float Temperature;
@@ -7,3 +11,5 @@ struct SensorValues{
     int LightLevel;
     int CO2;
 };
+
+#endif

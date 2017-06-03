@@ -24,7 +24,7 @@ int GetYPosition(int value, int height){
 //Рисует точку на графике
 void DrawPixel(int x, int y){
     int startX = 72,  startY = 250; // начало координат графика
-    myGLCD.setColor(0,255,255);
+    myGLCD.setColor(255,255,255);
     myGLCD.drawPixel(startX + x, startY - y);
 }
 //закрашивает пиксель в цвет сетки на графике (удаляет точку)
@@ -35,7 +35,8 @@ void RemovePixel(int x, int y){
     else if (!x % 10) color = 60;
     else if (!y % 50) color = 205;
     else if (!y % 25) color = 60;
-    myGLCD.setColor(0, 0, color);
+    if(color == 0) myGLCD.setColor(0, 0, color);
+    else myGLCD.setColor(60, 60, color);
     myGLCD.drawPixel(startX + x, startY - y);
 }
 // Рисуем график
@@ -76,14 +77,14 @@ void InitScreen(){
         myGLCD.setBackColor(0, 0, 0);
         if (yg==tg)
         {
-            myGLCD.setColor(0, 0, 205);
+            myGLCD.setColor(60, 60, 205);
             myGLCD.drawLine(72, yg, 478, yg);
             myGLCD.print(String(pH_g), 2, yg-4);
             tg=tg+50;
         }
         else
         {
-            myGLCD.setColor(0, 0, 60);
+            myGLCD.setColor(60, 60, 60);
             myGLCD.drawLine(72, yg, 478, yg);
             myGLCD.print(String(pH_g), 2, yg-4);
         }
@@ -97,14 +98,14 @@ void InitScreen(){
     {
         if ((xg-72)==tg)
         {        
-            myGLCD.setColor(0, 0, 255);
+            myGLCD.setColor(60, 60, 255);
             myGLCD.drawLine(xg,50, xg, 254);
             myGLCD.print(String(tg), xg-8, 255);
             tg=tg+30;
         }
         else 
         {
-            myGLCD.setColor(0, 0, 60);
+            myGLCD.setColor(60, 60, 60);
             myGLCD.drawLine(xg,50, xg, 250);
         } 
     }

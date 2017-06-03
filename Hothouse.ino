@@ -2,7 +2,9 @@
 #include "TemperatureAndHumiditySensor.h"
 #include "LightSensor.h"
 #include "LampManager.h"
+#include "SdManager.h"
 
+#define GRAPH_UPDATE_TIME 5
 // Declare which fonts we will be using
 
 ScreenManager screenManager;
@@ -11,6 +13,7 @@ LightSensor lightSensor;
 LampManager lampManager;
 SensorValues sensorValues;
 CO2History co2History;
+SDManager sdManager(true);
 
 int secondCount = 0; //количество секунд
 
@@ -20,6 +23,7 @@ void setup()
   screenManager.Init();
   lightSensor.Init();
   lampManager.Init();
+  co2History.SetVal(sdManager.ReadCo2Value());
   co2History.Update();
   pinMode(DHTPIN, INPUT);
 }
@@ -31,8 +35,9 @@ void loop()
     tempAndHumSensor.UpdateValue();
                    //каждую секунду счетчик увеличивается на 1
   }
-  if(secondCount % 120 == 0) {
+  if(secondCount % (GRAPH_UPDATE_TIME*2) == 0) {
     co2History.Update();                  //раз в минуту читаются данные с датчика CO2 и сохрвняются
+    sdManager.WriteCo2Value(co2History.GetVal());
     screenManager.DrawGraph(co2History);  //рисует график
   }
   sensorValues.CO2 = co2History.GetCurrentValue();
@@ -42,6 +47,7 @@ void loop()
   sensorValues.StrobeLength = lampManager.GetStrobeLength();
   sensorValues.DelayLength = lampManager.GetDelayLength();
   screenManager.Show(sensorValues);       //отображение данных датчиков на экране
+  sdManager.WriteToLog(sensorValues);
   delay(500);
   secondCount += 1;
 }

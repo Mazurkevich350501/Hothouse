@@ -1,5 +1,6 @@
 #include <SdFat.h>
 #include "customMQ135.h"
+#include "Co2Values.h"
 
 #define HISTORY_LENGTH 470  //количество хранимых значений
 #define SD_CHIP_SELECT  53  //порт для карты пямяти
@@ -15,15 +16,12 @@ class CO2History {
         int GetHistoryLength();         //возвращает длину истории
         int GetLastValue();             //возвращает последнее измеренное значение (тоже самое что Read(0) )
         int GetCurrentValue();
-    private:
-        bool withSd = false;
-        void save();                    //запись истории в файл
+        void SetVal(Co2Value data);
+        Co2Value GetVal(); 
+    private:                   //запись истории в файл
         SdFat sd;                       //класс, который пишет и читает с флешки
         File myFile;                    //файл который используется для хранения данных
-        struct Data{                    //структура, которая записывается в файл
-            int headIndex;              //голова кольца
-            int values[HISTORY_LENGTH]; //массив значений
-        } data;
+        Co2Value data;
         /*
             Здесь типа реализовано кольцо для хранения данных с минимальными перезаписями.
             Суть такова что пишутся значения по кругу в массив. 
