@@ -39,6 +39,33 @@ void RemovePixel(int x, int y){
     else myGLCD.setColor(60, 60, color);
     myGLCD.drawPixel(startX + x, startY - y);
 }
+
+void DrawLine(int xPos, int starY, int endY){
+    if(starY > endY){
+        starY += endY;
+        endY = starY - endY;
+        starY -= endY;
+    }
+
+    DrawPixel(xPos, starY);
+
+    for (int i = starY + 1; i < endY; i+=1)
+        DrawPixel(xPos, i);
+}
+
+void RemoveLine(int xPos, int starY, int endY){
+    if(starY > endY){
+        starY += endY;
+        endY = starY - endY;
+        starY -= endY;
+    }
+
+    RemovePixel(xPos, starY);
+
+    for (int i = starY + 1; i < endY; i+=1)
+        RemovePixel(xPos, i);
+}
+
 // Рисуем график
 void ScreenManager::DrawGraph(CO2History &history){
     //размеры графика по ширине и высоте
@@ -49,12 +76,11 @@ void ScreenManager::DrawGraph(CO2History &history){
         : xWidth;
     //Рисуем точку графика
     for(int i = 0; i < xWidth; i++){
-        //удаляем предыдущее значение с координатой x = i
-        int yPos = GetYPosition(history.Read(i + 1), yHeight);
-        RemovePixel(i, yPos); 
-        //добавляем новую точку
-        yPos = GetYPosition(history.Read(i), yHeight);
-        DrawPixel(i, yPos);
+        int yPos0 = GetYPosition(history.Read(i), yHeight);
+        int yPos1 = GetYPosition(history.Read(i + 1), yHeight);
+        int yPos2 = GetYPosition(history.Read(i + 2), yHeight);
+        RemoveLine(i + 1, yPos1, yPos2); 
+        DrawLine(i, yPos0, yPos1);
     }
 }
 
@@ -148,4 +174,3 @@ void ScreenManager::Show(SensorValues sensorValues){
     myGLCD.print(String(sensorValues.StrobeLength) + "ms ", 120, 286);      //strobe
     myGLCD.print(String(sensorValues.DelayLength) + "ms    ", 347, 286);    //delay
 }
-
