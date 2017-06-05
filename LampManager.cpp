@@ -34,21 +34,21 @@ void changeLampState(){
 }
 //конструктор
 LampManager::LampManager(){
-    int value = 1000;//((int)(MAX_VALUE/(2*STEP)))*STEP;   //среднее разперенное значение
+    int value = ((int)(MAX_VALUE/(2*STEP)))*STEP;   //среднее разперенное значение
     strobeLength = value;                           //время горения
     delayLength = value;                            //время не горения
-   // attachInterrupt(0, downDelayLength, RISING);    //прерывания на кнопки.
-   // attachInterrupt(1, upDelayLength, RISING);      //запускают обработчики прерываний, когда происходит нажатие на кнопку
-   // attachInterrupt(4, downStrobeLength, RISING);
-   // attachInterrupt(5, upStrobeLength, RISING);
+    attachInterrupt(0, downDelayLength, RISING);    //прерывания на кнопки.
+    attachInterrupt(1, upDelayLength, RISING);      //запускают обработчики прерываний, когда происходит нажатие на кнопку
+    attachInterrupt(4, downStrobeLength, RISING);
+    attachInterrupt(5, upStrobeLength, RISING);
 }
 //инициализация счетчика. (должен инициализироваться из сетапа)
 void LampManager::Init(){
     isOn = true;
     pinMode(LAMP_PIN, OUTPUT);
     digitalWrite(LAMP_PIN, HIGH);
-    //Timer3.initialize(strobeLength);            //инициализация с длительностью равной длительности горения
-    //Timer3.attachInterrupt(changeLampState);    //объявляем обработчик рерывания таймера
+    Timer3.initialize(strobeLength);            //инициализация с длительностью равной длительности горения
+    Timer3.attachInterrupt(changeLampState);    //объявляем обработчик рерывания таймера
 }
 
 int LampManager::GetStrobeLength(){

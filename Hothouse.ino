@@ -4,8 +4,8 @@
 #include "LampManager.h"
 #include "SdManager.h"
 
-#define GRAPH_UPDATE_TIME 5
-// Declare which fonts we will be using
+#define GRAPH_UPDATE_TIME 60
+#define LOG_TIME 60
 
 ScreenManager screenManager;
 TemperatureAndHumiditySensor tempAndHumSensor;
@@ -13,7 +13,7 @@ LightSensor lightSensor;
 LampManager lampManager;
 SensorValues sensorValues;
 CO2History co2History;
-SDManager sdManager(true);
+SDManager sdManager(true, (int)LOG_TIME);
 
 int secondCount = 0; //количество секунд
 
@@ -21,11 +21,11 @@ void setup()
 {
   Serial.begin(9600);
   screenManager.Init();
-  lightSensor.Init();
   lampManager.Init();
   co2History.SetVal(sdManager.ReadCo2Value());
   co2History.Update();
   pinMode(DHTPIN, INPUT);
+  lightSensor.Init();
 }
 
 void loop()
@@ -47,7 +47,9 @@ void loop()
   sensorValues.StrobeLength = lampManager.GetStrobeLength();
   sensorValues.DelayLength = lampManager.GetDelayLength();
   screenManager.Show(sensorValues);       //отображение данных датчиков на экране
-  sdManager.WriteToLog(sensorValues);
+  if(secondCount % (LOG_TIME*2) == 0){
+    sdManager.WriteToLog(sensorValues);
+  }
   delay(500);
   secondCount += 1;
 }

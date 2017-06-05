@@ -2,9 +2,6 @@
 #include "customMQ135.h"
 #include "Co2Values.h"
 
-#define HISTORY_LENGTH 470  //количество хранимых значений
-#define SD_CHIP_SELECT  53  //порт для карты пямяти
-#define FILE_NAME "CO2History.bin" //имя файла где хранятся значения
 #define SENSOR_PIN 0    //пин датчика MQ135
 
 //класс содержит в себе историю о значениях CO2

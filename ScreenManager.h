@@ -2,7 +2,7 @@
 #include "SensorValues.h"
 #include "CO2History.h"
 
-#define MAX_GRAPH_VALUE 5000 //максимальное значение ppm
+#define MAX_GRAPH_VALUE 3000 //максимальное значение ppm
 #define MIN_GRAPH_VALUE 0 // минимально значение ppm
 
 class ScreenManager{

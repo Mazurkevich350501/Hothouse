@@ -5,16 +5,19 @@
 #define SD_CHIP_SELECT  53  //порт для карты пямяти
 #define CO2_FILE "CO2History.bin" //имя файла где хранятся значения
 #define LOG_FILE "Log.txt"
+#
+
 
 class SDManager {
     public:
-        SDManager(bool withSd);
+        SDManager(bool withSd, int logUpdateTime);
         void WriteCo2Value(Co2Value val);
         Co2Value ReadCo2Value();
         void WriteToLog(SensorValues val);
     private:
         bool withSd = false;
         double i = 0;
+        float logUpdateTime;
         SdFat sd;                       //класс, который пишет и читает с флешки
         File file;                    //файл который используется для хранения данных                    
         /*
