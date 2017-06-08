@@ -9,7 +9,7 @@ class CO2History {
     public:
         CO2History();                   //конструктор
         int Read(int index);            //читает из истории значение с индексом index, если index=10, то вернется занчение измеренное 10 раз назад
-        void Update();                  //считывает показание и сохраняет его на карту памяти
+        void Update(float t, float h);                  //считывает показание и сохраняет его на карту памяти
         int GetHistoryLength();         //возвращает длину истории
         int GetLastValue();             //возвращает последнее измеренное значение (тоже самое что Read(0) )
         int GetCurrentValue();

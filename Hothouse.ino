@@ -15,15 +15,18 @@ SensorValues sensorValues;
 CO2History co2History;
 SDManager sdManager(true, (int)LOG_TIME);
 
-int secondCount = 0; //количество секунд
+int secondCount = 1; //количество секунд
 
 void setup()
 {
   Serial.begin(9600);
   screenManager.Init(GRAPH_UPDATE_TIME);
   lampManager.Init();
-  co2History.SetVal(sdManager.ReadCo2Value());
-  co2History.Update();
+  //co2History.SetVal(sdManager.ReadCo2Value());
+  tempAndHumSensor.UpdateValue();
+  co2History.Update(
+    tempAndHumSensor.GetLastTemperature(),
+    tempAndHumSensor.GetLastHumidity());
   pinMode(DHTPIN, INPUT);
   lightSensor.Init();
 }
@@ -36,7 +39,9 @@ void loop()
                    //каждую секунду счетчик увеличивается на 1
   }
   if(secondCount % (GRAPH_UPDATE_TIME*2) == 0) {
-    co2History.Update();                  //раз в минуту читаются данные с датчика CO2 и сохрвняются
+    co2History.Update(
+      tempAndHumSensor.GetLastTemperature(),
+      tempAndHumSensor.GetLastHumidity());                  //раз в минуту читаются данные с датчика CO2 и сохрвняются
     sdManager.WriteCo2Value(co2History.GetVal());
     screenManager.DrawGraph(co2History);  //рисует график
   }

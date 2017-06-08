@@ -25,11 +25,11 @@ int CO2History::Read(int index){
         : data.values[index + data.headIndex];
 }
 //чтение и сохранение данных о co2
-void CO2History::Update(){
+void CO2History::Update(float t, float h){
     data.headIndex = data.headIndex > 0
         ? data.headIndex - 1
         : HISTORY_LENGTH;
-    data.values[data.headIndex] = sensor.getPPM();
+    data.values[data.headIndex] = sensor.getCorrectedPPM(t, h);
 }
 
 int CO2History::GetHistoryLength(){
