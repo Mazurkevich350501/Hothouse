@@ -7,7 +7,7 @@
 
 class ScreenManager{
     public:
-        void Init();		//инициализация экрана
+        void Init(int updateDelay);		//инициализация экрана
         void Show(SensorValues sensorValues);	// отображенеи показаний датчиков
         void DrawGraph(CO2History &history);	//Отрисовка графика
 };

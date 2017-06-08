@@ -20,7 +20,7 @@ int secondCount = 0; //количество секунд
 void setup()
 {
   Serial.begin(9600);
-  screenManager.Init();
+  screenManager.Init(GRAPH_UPDATE_TIME);
   lampManager.Init();
   co2History.SetVal(sdManager.ReadCo2Value());
   co2History.Update();

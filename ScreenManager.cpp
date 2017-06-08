@@ -7,12 +7,12 @@ extern uint8_t BigFont[];
 
 UTFT myGLCD(CTE32HR,38,39,40,41);
 
-void InitScreen();
+void InitScreen(float updateDelay);
 //инициализация экрана
-void ScreenManager::Init(){
+void ScreenManager::Init(int updateDelay){
     randomSeed(analogRead(1));
     myGLCD.InitLCD();
-    InitScreen();
+    InitScreen((float)updateDelay);
 } 
 //расчитывает позицию по вертикали пикселя по его значению
 int GetYPosition(int value, int height){
@@ -79,13 +79,13 @@ void ScreenManager::DrawGraph(CO2History &history){
         int yPos0 = GetYPosition(history.Read(i), yHeight);
         int yPos1 = GetYPosition(history.Read(i + 1), yHeight);
         int yPos2 = GetYPosition(history.Read(i + 2), yHeight);
-        RemoveLine(i + 1, yPos1, yPos2); 
+        RemoveLine(i , yPos1, yPos2); 
         DrawLine(i, yPos0, yPos1);
     }
 }
 
 //Рисует задний фон экрана
-void InitScreen(){
+void InitScreen(float updateDelay){
     int xg, tg;
     int yg;
     int pH_g = MAX_GRAPH_VALUE, step = (MAX_GRAPH_VALUE - MIN_GRAPH_VALUE)/8;
@@ -126,7 +126,8 @@ void InitScreen(){
         {        
             myGLCD.setColor(60, 60, 255);
             myGLCD.drawLine(xg,50, xg, 254);
-            myGLCD.print(String(tg), xg-8, 255);
+            int value = (int)(tg * (updateDelay/60.));
+            myGLCD.print(String(value), xg-8, 255);
             tg=tg+30;
         }
         else 
